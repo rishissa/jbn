@@ -8,10 +8,22 @@ import {
 } from "../controllers/banner.js";
 const router = Router();
 import { createRequest } from "../middlewares/banner.js";
-import upload from "../../../../middlewares/upload.js";
 import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
+
+import multer from "multer";
+
+const upload = multer({
+  limits: {
+    fileSize: 100 * 1024 * 1024,
+  },
+});
+
+const uploadFields = upload.fields([
+  { name: "desktop", maxCount: 1 },
+  { name: "mobile", maxCount: 1 },
+]);
 // Create banner
-router.post("/", [jwtVerify, upload.array("file", 10)], create);
+router.post("/", [jwtVerify, uploadFields], create);
 
 // List banners
 router.get("/", [], find);

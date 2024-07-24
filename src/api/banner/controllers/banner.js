@@ -7,16 +7,19 @@ export const create = async (req, res) => {
     if (!req.files || req.files.length === 0) {
       return res.status(500).send({ error: "No files uploaded" });
     } else {
-      const uploadPromises = req.files.map(async (file) => {
-        const fileURL = await aws_s3_uploader(file);
-        const body = req.body;
-        body["image_url"] = fileURL;
-        const banner = new Banner(body);
-        await banner.save();
-        return banner;
-      });
-      const uploadedMedia = await Promise.all(uploadPromises);
-      return res.status(200).send(uploadedMedia);
+      //   const uploadPromises = req.files.map(async (file) => {
+
+      const desktopfileURL = await aws_s3_uploader(req.files["desktop"]);
+      const mobilefileURL = await aws_s3_uploader(req.files["mobile"]);
+      const body = req.body;
+      body["desktop_image_url"] = desktopfileURL[0];
+      body["mobile_image_url"] = mobilefileURL[0];
+      const banner = new Banner(body);
+      await banner.save();
+      //     return banner;
+      //   });
+      //   const uploadedMedia = await Promise.all(uploadPromises);
+      return res.status(200).send({ data: banner });
     }
   } catch (error) {
     console.log(error);

@@ -14,26 +14,53 @@ const secretAccessKey = AWS_SECRET_KEY;
 const region = S3_REGION;
 const Bucket = S3_BUCKET;
 const aws_s3_uploader = async (file) => {
-  const filesToUpload = await new Upload({
-    client: new S3Client({
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
+  let files = [];
+  if (file.constructor === Array) {
+    for (const it of file) {
+      const filesToUpload = await new Upload({
+        client: new S3Client({
+          credentials: {
+            accessKeyId,
+            secretAccessKey,
+          },
+          region,
+        }),
+        params: {
+          ACL: "public-read",
+          Bucket,
+          Key: it.originalname,
+          Body: it.buffer,
+        },
+        tags: [],
+        queueSize: 4,
+        partSize: 1024 * 1024 * 5,
+        leavePartsOnError: false,
+      }).done();
+      files.push(filesToUpload.Location);
+    }
+    return files;
+  } else {
+    const filesToUpload = await new Upload({
+      client: new S3Client({
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
+        region,
+      }),
+      params: {
+        ACL: "public-read",
+        Bucket,
+        Key: file.originalname,
+        Body: file.buffer,
       },
-      region,
-    }),
-    params: {
-      ACL: "public-read",
-      Bucket,
-      Key: file.originalname,
-      Body: file.buffer,
-    },
-    tags: [],
-    queueSize: 4,
-    partSize: 1024 * 1024 * 5,
-    leavePartsOnError: false,
-  }).done();
-  return filesToUpload.Location;
+      tags: [],
+      queueSize: 4,
+      partSize: 1024 * 1024 * 5,
+      leavePartsOnError: false,
+    }).done();
+    return filesToUpload.Location;
+  }
 };
 
 export default aws_s3_uploader;
