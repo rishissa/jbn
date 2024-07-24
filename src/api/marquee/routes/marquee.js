@@ -8,8 +8,10 @@ import {
 } from "../controllers/marquee.js";
 const router = Router();
 import { createRequest } from "../middlewares/marquee.js";
+import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
+import upload from "../../../../middlewares/upload.js";
 // Create marquee
-router.post("/", [createRequest], create);
+router.post("/", [jwtVerify, upload.array("file", 10)], create);
 
 // List marquees
 router.get("/", [], find);

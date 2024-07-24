@@ -1,6 +1,5 @@
 import { getPagination, getMeta, errorResponse } from "rapidjet";
-import Marquee from "../models/marquee.js";
-import aws_s3_uploader from "../../../../services/s3_uploader.js";
+import Gallery from "../models/gallery.js";
 
 export const create = async (req, res) => {
   try {
@@ -12,9 +11,9 @@ export const create = async (req, res) => {
         const body = req.body;
         body["image_url"] = fileURL;
         body["active"] = true;
-        const marquee = new Marquee(body);
-        await marquee.save();
-        return marquee;
+        const gallery = new Gallery(body);
+        await gallery.save();
+        return gallery;
       });
       const uploadedMedia = await Promise.all(uploadPromises);
       return res.status(200).send(uploadedMedia);
@@ -35,12 +34,12 @@ export const find = async (req, res) => {
   try {
     const query = req.query;
     const pagination = await getPagination(query.pagination);
-    const marquees = await Marquee.find()
+    const gallerys = await Gallery.find()
       .skip(pagination.offset)
       .limit(pagination.limit);
-    const counts = await Marquee.countDocuments({});
+    const counts = await Gallery.countDocuments({});
     const meta = await getMeta(pagination, counts);
-    return res.status(200).send({ data: marquees, meta });
+    return res.status(200).send({ data: gallerys, meta });
   } catch (error) {
     console.log(error);
     return res.status(500).send(
@@ -56,13 +55,13 @@ export const find = async (req, res) => {
 export const findOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const marquee = await Marquee.findById(id);
-    if (!marquee) {
+    const gallery = await Gallery.findById(id);
+    if (!gallery) {
       return res
         .status(404)
-        .send(errorResponse({ status: 404, message: "Marquee not found!" }));
+        .send(errorResponse({ status: 404, message: "Gallery not found!" }));
     }
-    return res.status(200).send({ data: marquee });
+    return res.status(200).send({ data: gallery });
   } catch (error) {
     console.log(error);
     return res.status(500).send(
@@ -78,13 +77,13 @@ export const findOne = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const marquee = await Marquee.findByIdAndUpdate(id, req.body, {
+    const gallery = await Gallery.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    if (!marquee) {
+    if (!gallery) {
       return res.status(400).send(errorResponse({ message: "Invalid ID" }));
     }
-    return res.status(200).send({ message: "Marquee updated!", data: marquee });
+    return res.status(200).send({ message: "Gallery updated!", data: gallery });
   } catch (error) {
     console.log(error);
     return res.status(500).send(
@@ -100,11 +99,11 @@ export const update = async (req, res) => {
 export const destroy = async (req, res) => {
   try {
     const { id } = req.params;
-    const marquee = await Marquee.findByIdAndDelete(id);
-    if (!marquee) {
+    const gallery = await Gallery.findByIdAndDelete(id);
+    if (!gallery) {
       return res.status(400).send(errorResponse({ message: "Invalid ID" }));
     }
-    return res.status(200).send({ message: "Marquee deleted!" });
+    return res.status(200).send({ message: "Gallery deleted!" });
   } catch (error) {
     console.log(error);
     return res.status(500).send(

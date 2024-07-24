@@ -6,7 +6,10 @@ const bannerSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  image_url: {
+  desktop_image_url: {
+    type: String,
+  },
+  mobile_image_url: {
     type: String,
   },
   call_to_action_url: {
