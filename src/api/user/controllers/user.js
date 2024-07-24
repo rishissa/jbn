@@ -1,7 +1,7 @@
 import { getPagination, getMeta, errorResponse } from "rapidjet";
 import User from "../models/user.js";
 import { jwtSign } from "../../../../services/jwt_sign.js";
-import { hashPass } from "../../../../services/bcrypt.js";
+import { comparePass, hashPass } from "../../../../services/bcrypt.js";
 
 export const create = async (req, res) => {
   try {
@@ -117,10 +117,15 @@ export const login = async (req, res) => {
         .send(errorResponse({ status: 400, message: "No User Found" }));
     }
 
-    user.set("password", undefined, { strict: false });
-
-    const token = jwtSign(user.id);
-    return res.status(200).send({ token, user });
+    let isMatched = await comparePass(password, user.password);
+    if (isMatched) {
+      const token = jwtSign(user.id);
+      return res.status(200).send({ token, user });
+    } else {
+      return res
+        .status(400)
+        .send(errorResponse({ status: 400, message: "Invalid Credentials" }));
+    }
   } catch (err) {
     console.log(err.message);
     return res.status(500).send(err.message);

@@ -1,22 +1,22 @@
 import { getPagination, getMeta, errorResponse } from "rapidjet";
 import Gallery from "../models/gallery.js";
+import aws_s3_uploader from "../../../../services/s3_uploader.js";
 
 export const create = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(500).send({ error: "No files uploaded" });
     } else {
-      const uploadPromises = req.files.map(async (file) => {
-        const fileURL = await aws_s3_uploader(file);
-        const body = req.body;
-        body["image_url"] = fileURL;
-        body["active"] = true;
-        const gallery = new Gallery(body);
-        await gallery.save();
-        return gallery;
-      });
-      const uploadedMedia = await Promise.all(uploadPromises);
-      return res.status(200).send(uploadedMedia);
+      //   const uploadPromises = req.files.map(async (file) => {
+      const fileURLs = await aws_s3_uploader(req.files);
+
+      const data = fileURLs.map((file) => ({
+        image_url: file,
+        tag: req.body.tag,
+      }));
+      const gallery = await Gallery.insertMany(data);
+
+      return res.status(200).send({ data: gallery });
     }
   } catch (error) {
     console.log(error);
@@ -34,7 +34,15 @@ export const find = async (req, res) => {
   try {
     const query = req.query;
     const pagination = await getPagination(query.pagination);
-    const gallerys = await Gallery.find()
+    const tag = req.query.tag;
+
+    let tag_query;
+    if (tag) {
+      tag_query = {
+        tag,
+      };
+    }
+    const gallerys = await Gallery.find(tag_query)
       .skip(pagination.offset)
       .limit(pagination.limit);
     const counts = await Gallery.countDocuments({});
