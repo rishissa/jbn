@@ -7,7 +7,7 @@ import {
   AWS_SECRET_KEY,
   S3_BUCKET,
   S3_REGION,
-} from "../config/env";
+} from "../config/env.js";
 config();
 const accessKeyId = AWS_ACCESS_KEY;
 const secretAccessKey = AWS_SECRET_KEY;

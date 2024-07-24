@@ -109,7 +109,6 @@ export const destroy = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email);
     const user = await User.findOne({ email: email }).select("+password");
 
     if (!user) {
@@ -118,9 +117,10 @@ export const login = async (req, res) => {
         .send(errorResponse({ status: 400, message: "No User Found" }));
     }
 
-    console.log(user);
+    user.set("password", undefined, { strict: false });
+
     const token = jwtSign(user.id);
-    return res.status(200).send(token, user);
+    return res.status(200).send({ token, user });
   } catch (err) {
     console.log(err.message);
     return res.status(500).send(err.message);
