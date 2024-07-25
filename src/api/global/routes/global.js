@@ -1,25 +1,17 @@
 import { Router } from "express";
-import {
-  create,
-  find,
-  update,
-  destroy,
-  findOne,
-} from "../controllers/global.js";
+import { create, find, update, destroy } from "../controllers/global.js";
 const router = Router();
 import { createRequest } from "../middlewares/global.js";
 import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
+import upload from "../../../../middlewares/upload.js";
 // Create global
 router.post("/", [jwtVerify], create);
 
 // List globals
 router.get("/", [], find);
 
-// List Single global
-router.get("/:id", [], findOne);
-
 // Update globals
-router.put("/:id", [], update);
+router.put("/", [upload.single("brand_logo_url")], update);
 
 // Delete global
 router.delete("/:id", [], destroy);

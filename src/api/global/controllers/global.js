@@ -1,5 +1,6 @@
 import { getPagination, getMeta, errorResponse } from "rapidjet";
 import Global from "../models/global.js";
+import aws_s3_uploader from "../../../../services/s3_uploader.js";
 
 export const create = async (req, res) => {
   try {
@@ -26,16 +27,10 @@ export const create = async (req, res) => {
 
 export const find = async (req, res) => {
   try {
-    const query = req.query;
-    const pagination = await getPagination(query.pagination);
-    const globals = await Global.find()
-      .skip(pagination.offset)
-      .limit(pagination.limit);
-    const counts = await Global.countDocuments({});
-    const meta = await getMeta(pagination, counts);
-    return res.status(200).send({ data: globals, meta });
+    const globals = await Global.find();
+    return res.status(200).send({ data: globals });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res.status(500).send(
       errorResponse({
         status: 500,
@@ -71,10 +66,11 @@ export const find = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const data = req.body;
-    const global = await Global.updateOne({}, { $set: data });
-    if (!global) {
-      return res.status(400).send(errorResponse({ message: "Invalid ID" }));
+    if (req.file) {
+      const brand_logo_url = await aws_s3_uploader(req.file);
+      data["brand_logo_url"] = brand_logo_url;
     }
+    const global = await Global.updateOne({}, { $set: data });
     return res.status(200).send({ message: "Global updated!", data: global });
   } catch (error) {
     console.log(error);
