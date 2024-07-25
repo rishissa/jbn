@@ -79,6 +79,23 @@ export const findOne = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
+    if (req.files) {
+      const filteredDataPromises = Object.entries(req.files).map(
+        async ([fieldname, imageArray]) => {
+          const imageObject = imageArray[0];
+          const image_data = await aws_s3_uploader(imageObject);
+          return {
+            [fieldname]: image_data,
+          };
+        }
+      );
+      let filteredData = await Promise.all(filteredDataPromises);
+      filteredData = Object.assign({}, ...filteredData);
+      req.body = {
+        ...req.body,
+        ...filteredData,
+      };
+    }
     const { id } = req.params;
     const banner = await Banner.findByIdAndUpdate(id, req.body, { new: true });
     if (!banner) {

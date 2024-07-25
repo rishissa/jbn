@@ -3,9 +3,13 @@ const globalSchema = new mongoose.Schema({
   brand_name: {
     type: String,
   },
-  brand_logo_url: {
+  light_brand_logo_url: {
     type: String,
   },
+  dark_brand_logo_url: {
+    type: String,
+  },
+  favicon_url: { type: String },
   address: {
     type: String,
   },

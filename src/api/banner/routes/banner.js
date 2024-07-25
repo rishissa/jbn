@@ -19,8 +19,8 @@ const upload = multer({
 });
 
 const uploadFields = upload.fields([
-  { name: "desktop", maxCount: 1 },
-  { name: "mobile", maxCount: 1 },
+  { name: "desktop_image_url", maxCount: 1 },
+  { name: "mobile_image_url", maxCount: 1 },
 ]);
 // Create banner
 router.post("/", [jwtVerify, uploadFields], create);
@@ -32,7 +32,7 @@ router.get("/", [], find);
 router.get("/:id", [], findOne);
 
 // Update banners
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify, uploadFields], update);
 
 // Delete banner
 router.delete("/:id", [], destroy);

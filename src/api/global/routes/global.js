@@ -3,7 +3,20 @@ import { create, find, update, destroy } from "../controllers/global.js";
 const router = Router();
 import { createRequest } from "../middlewares/global.js";
 import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
-import upload from "../../../../middlewares/upload.js";
+import multer from "multer";
+
+const upload = multer({
+  limits: {
+    fileSize: 100 * 1024 * 1024,
+  },
+});
+
+const uploadFields = upload.fields([
+  { name: "light_brand_logo_url", maxCount: 1 },
+  { name: "dark_brand_logo_url", maxCount: 1 },
+  { name: "favicon_url", maxCount: 1 },
+]);
+
 // Create global
 router.post("/", [jwtVerify], create);
 
@@ -11,7 +24,7 @@ router.post("/", [jwtVerify], create);
 router.get("/", [], find);
 
 // Update globals
-router.put("/", [upload.single("brand_logo_url")], update);
+router.put("/", [uploadFields], update);
 
 // Delete global
 router.delete("/:id", [], destroy);

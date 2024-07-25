@@ -65,11 +65,25 @@ export const find = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
-    const data = req.body;
-    if (req.file) {
-      const brand_logo_url = await aws_s3_uploader(req.file);
-      data["brand_logo_url"] = brand_logo_url;
+    if (req.files) {
+      const filteredDataPromises = Object.entries(req.files).map(
+        async ([fieldname, imageArray]) => {
+          const imageObject = imageArray[0];
+          const image_data = await aws_s3_uploader(imageObject);
+          return {
+            [fieldname]: image_data,
+          };
+        }
+      );
+      let filteredData = await Promise.all(filteredDataPromises);
+      filteredData = Object.assign({}, ...filteredData);
+      req.body = {
+        ...req.body,
+        ...filteredData,
+      };
     }
+
+    const data = req.body;
     const global = await Global.updateOne({}, { $set: data });
     return res.status(200).send({ message: "Global updated!", data: global });
   } catch (error) {
