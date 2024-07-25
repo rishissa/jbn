@@ -27,7 +27,7 @@ export const create = async (req, res) => {
 
 export const find = async (req, res) => {
   try {
-    const globals = await Global.find();
+    const globals = await Global.findOne();
     return res.status(200).send({ data: globals });
   } catch (error) {
     console.log(error.message);
