@@ -5,6 +5,7 @@ import {
   update,
   destroy,
   findOne,
+  fetchTags,
 } from "../controllers/gallery.js";
 const router = Router();
 import { createRequest } from "../middlewares/gallery.js";
@@ -23,6 +24,8 @@ router.post("/", [createRequest], create);
 router.get("/", [], find);
 
 // List Single gallery
+router.get("/tags", [], fetchTags);
+
 router.get("/:id", [], findOne);
 
 // Update gallerys

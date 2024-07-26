@@ -123,3 +123,21 @@ export const destroy = async (req, res) => {
     );
   }
 };
+
+export const fetchTags = async (req, res) => {
+  try {
+    const distinctTags = await Gallery.aggregate([
+      { $group: { _id: "$tag" } },
+      { $project: { _id: 0, tag: "$_id" } },
+    ]);
+
+    const tagsList = distinctTags.map((doc) => doc.tag);
+
+    return res.status(200).send({ data: tagsList });
+  } catch (err) {
+    console.log(err.message);
+    return res
+      .status(400)
+      .send(errorResponse({ status: 400, message: err.message }));
+  }
+};
