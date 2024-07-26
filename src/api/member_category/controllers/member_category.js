@@ -8,15 +8,13 @@ export const create = async (req, res) => {
     return res.status(200).send({ data: member_category });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send(
-        errorResponse({
-          status: 500,
-          message: "Internal Server Error",
-          details: error.message,
-        })
-      );
+    return res.status(500).send(
+      errorResponse({
+        status: 500,
+        message: "Internal Server Error",
+        details: error.message,
+      })
+    );
   }
 };
 
@@ -32,15 +30,13 @@ export const find = async (req, res) => {
     return res.status(200).send({ data: member_categorys, meta });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send(
-        errorResponse({
-          status: 500,
-          message: "Internal Server Error",
-          details: error.message,
-        })
-      );
+    return res.status(500).send(
+      errorResponse({
+        status: 500,
+        message: "Internal Server Error",
+        details: error.message,
+      })
+    );
   }
 };
 
@@ -58,15 +54,13 @@ export const findOne = async (req, res) => {
     return res.status(200).send({ data: member_category });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send(
-        errorResponse({
-          status: 500,
-          message: "Internal Server Error",
-          details: error.message,
-        })
-      );
+    return res.status(500).send(
+      errorResponse({
+        status: 500,
+        message: "Internal Server Error",
+        details: error.message,
+      })
+    );
   }
 };
 
@@ -86,15 +80,13 @@ export const update = async (req, res) => {
       .send({ message: "Member_category updated!", data: member_category });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send(
-        errorResponse({
-          status: 500,
-          message: "Internal Server Error",
-          details: error.message,
-        })
-      );
+    return res.status(500).send(
+      errorResponse({
+        status: 500,
+        message: "Internal Server Error",
+        details: error.message,
+      })
+    );
   }
 };
 
@@ -108,14 +100,12 @@ export const destroy = async (req, res) => {
     return res.status(200).send({ message: "Member_category deleted!" });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send(
-        errorResponse({
-          status: 500,
-          message: "Internal Server Error",
-          details: error.message,
-        })
-      );
+    return res.status(500).send(
+      errorResponse({
+        status: 500,
+        message: "Internal Server Error",
+        details: error.message,
+      })
+    );
   }
 };

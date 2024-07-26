@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import uniqueValidator from "mongoose-unique-validator";
+
 const memberSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -20,12 +22,15 @@ const memberSchema = new mongoose.Schema({
   },
   phone_number: {
     type: String,
+    unique: true,
   },
   whatsapp_number: {
     type: String,
+    unique: true,
   },
   email: {
     type: String,
+    unique: true,
   },
   instagram_handle: {
     type: String,
@@ -36,8 +41,17 @@ const memberSchema = new mongoose.Schema({
   about: {
     type: String,
   },
+  chapter: {
+    type: Schema.Types.ObjectId,
+    ref: "Chapter",
+  },
+  member_category: {
+    type: Schema.Types.ObjectId,
+    ref: "Member_category",
+  },
 });
 
+memberSchema.plugin(uniqueValidator);
 const Member = mongoose.model("Member", memberSchema);
 
 export default Member;
