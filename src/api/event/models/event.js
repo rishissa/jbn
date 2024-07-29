@@ -27,6 +27,10 @@ const eventSchema = new mongoose.Schema({
   associate_project_name: {
     type: String,
   },
+  type: {
+    type: String,
+    enum: ["upcoming", "completed"],
+  },
   chapter: { type: Schema.Types.ObjectId, ref: "Chapter" },
 });
 
