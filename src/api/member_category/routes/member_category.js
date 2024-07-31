@@ -5,6 +5,7 @@ import {
   update,
   destroy,
   findOne,
+  getMembersCountByCategory,
 } from "../controllers/member_category.js";
 const router = Router();
 import { createRequest } from "../middlewares/member_category.js";
@@ -15,6 +16,7 @@ router.post("/", [jwtVerify, createRequest], create);
 // List member_categorys
 router.get("/", [], find);
 
+router.get("/stats", [], getMembersCountByCategory);
 // List Single member_category
 router.get("/:id", [], findOne);
 

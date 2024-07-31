@@ -1,5 +1,6 @@
 import { getPagination, getMeta, errorResponse } from "rapidjet";
 import Member_category from "../models/member_category.js";
+import Member from "../../member/models/member.js";
 
 export const create = async (req, res) => {
   try {
@@ -107,5 +108,45 @@ export const destroy = async (req, res) => {
         details: error.message,
       })
     );
+  }
+};
+
+export const getMembersCountByCategory = async (req, res) => {
+  try {
+    const categories = await Member.aggregate([
+      {
+        $lookup: {
+          from: "member_categories", // Collection name in MongoDB
+          localField: "member_category",
+          foreignField: "_id",
+          as: "category_info",
+        },
+      },
+      {
+        $unwind: "$category_info",
+      },
+      {
+        $group: {
+          _id: "$category_info._id",
+          name: { $first: "$category_info.name" },
+          member_count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category_id: "$_id",
+          category_name: "$name",
+          member_count: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).send({ data: categories });
+  } catch (err) {
+    console.log(err.message);
+    return res
+      .status(400)
+      .send(errorResponse({ status: 400, message: err.message }));
   }
 };
