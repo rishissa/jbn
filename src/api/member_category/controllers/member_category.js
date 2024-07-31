@@ -23,12 +23,40 @@ export const find = async (req, res) => {
   try {
     const query = req.query;
     const pagination = await getPagination(query.pagination);
-    const member_categorys = await Member_category.find()
-      .skip(pagination.offset)
-      .limit(pagination.limit);
+    // const member_categorys = await Member_category.find()
+    //   .skip(pagination.offset)
+    //   .limit(pagination.limit);
+    const categories = await Member.aggregate([
+      {
+        $lookup: {
+          from: "member_categories", // Collection name in MongoDB
+          localField: "member_category",
+          foreignField: "_id",
+          as: "category_info",
+        },
+      },
+      {
+        $unwind: "$category_info",
+      },
+      {
+        $group: {
+          _id: "$category_info._id",
+          name: { $first: "$category_info.name" },
+          member_count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category_id: "$_id",
+          category_name: "$name",
+          member_count: 1,
+        },
+      },
+    ]);
     const counts = await Member_category.countDocuments({});
     const meta = await getMeta(pagination, counts);
-    return res.status(200).send({ data: member_categorys, meta });
+    return res.status(200).send({ data: categories, meta });
   } catch (error) {
     console.log(error);
     return res.status(500).send(
