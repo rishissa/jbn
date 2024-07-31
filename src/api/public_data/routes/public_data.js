@@ -11,10 +11,20 @@ import {
 const router = Router();
 import { createRequest } from "../middlewares/public_data.js";
 import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
+import multer from "multer";
+
+const upload = multer({
+  limits: {
+    fileSize: 100 * 1024 * 1024,
+  },
+});
+
+const uploadFields = upload.single("profile_pic_url");
+
 // Create public_data
-router.post("/about-us", [jwtVerify], createAboutUs);
-router.post("/terms", [jwtVerify], createTermsAndConditions);
-router.post("/privacy", [jwtVerify], createPrivacyPolicy);
+router.post("/about-us", [jwtVerify, uploadFields], createAboutUs);
+router.post("/terms", [jwtVerify, uploadFields], createTermsAndConditions);
+router.post("/privacy", [jwtVerify, uploadFields], createPrivacyPolicy);
 
 // List public_datas
 router.get("/", [], find);
