@@ -26,31 +26,25 @@ export const find = async (req, res) => {
     // const member_categorys = await Member_category.find()
     //   .skip(pagination.offset)
     //   .limit(pagination.limit);
-    const categories = await Member.aggregate([
+    const categories = await Member_category.aggregate([
       {
         $lookup: {
-          from: "member_categories", // Collection name in MongoDB
-          localField: "member_category",
-          foreignField: "_id",
-          as: "category_info",
+          from: "members", // Collection name for members
+          localField: "_id",
+          foreignField: "member_category",
+          as: "members",
         },
       },
       {
-        $unwind: "$category_info",
-      },
-      {
-        $group: {
-          _id: "$category_info._id",
-          name: { $first: "$category_info.name" },
-          member_count: { $sum: 1 },
+        $addFields: {
+          memberCount: { $size: "$members" }, // Count of members in each category
         },
       },
       {
         $project: {
-          _id: 0,
-          category_id: "$_id",
-          category_name: "$name",
-          member_count: 1,
+          _id: 1,
+          name: 1,
+          memberCount: 1,
         },
       },
     ]);
