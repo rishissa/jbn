@@ -14,10 +14,10 @@ import upload from "../../../../middlewares/upload.js";
 router.post("/", [jwtVerify, upload.single("banner_url")], create);
 
 // List chapters
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single chapter
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update chapters
 router.put("/:id", [jwtVerify, upload.single("banner_url")], update);

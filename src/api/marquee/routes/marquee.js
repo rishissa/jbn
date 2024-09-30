@@ -14,15 +14,15 @@ import upload from "../../../../middlewares/upload.js";
 router.post("/", [jwtVerify, upload.array("file", 10)], create);
 
 // List marquees
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single marquee
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update marquees
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify], update);
 
 // Delete marquee
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

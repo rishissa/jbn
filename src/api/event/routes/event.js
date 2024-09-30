@@ -14,10 +14,10 @@ import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
 router.post("/", [jwtVerify, upload.single("banner_url")], create);
 
 // List events
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single event
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update events
 router.put("/:id", [jwtVerify, upload.single("banner_url")], update);

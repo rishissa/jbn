@@ -21,12 +21,12 @@ const uploadFields = upload.fields([
 router.post("/", [jwtVerify], create);
 
 // List globals
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // Update globals
-router.put("/", [uploadFields], update);
+router.put("/", [jwtVerify, uploadFields], update);
 
 // Delete global
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

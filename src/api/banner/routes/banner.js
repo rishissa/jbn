@@ -26,15 +26,15 @@ const uploadFields = upload.fields([
 router.post("/", [jwtVerify, uploadFields], create);
 
 // List banners
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single banner
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update banners
 router.put("/:id", [jwtVerify, uploadFields], update);
 
 // Delete banner
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

@@ -27,15 +27,15 @@ router.post("/terms", [jwtVerify, uploadFields], createTermsAndConditions);
 router.post("/privacy", [jwtVerify, uploadFields], createPrivacyPolicy);
 
 // List public_datas
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single public_data
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update public_datas
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify], update);
 
 // Delete public_data
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

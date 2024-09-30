@@ -18,20 +18,20 @@ import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
 router.post("/", [jwtVerify, upload.array("files", 10)], create);
 
 // Create gallery
-router.post("/", [createRequest], create);
+router.post("/", [jwtVerify, createRequest], create);
 
 // List gallerys
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single gallery
-router.get("/tags", [], fetchTags);
+router.get("/tags", [jwtVerify], fetchTags);
 
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update gallerys
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify], update);
 
 // Delete gallery
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

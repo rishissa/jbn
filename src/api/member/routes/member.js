@@ -21,10 +21,10 @@ router.post(
 );
 
 // List members
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single member
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update members
 router.put(
@@ -34,6 +34,6 @@ router.put(
 );
 
 // Delete member
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

@@ -14,16 +14,16 @@ import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
 router.post("/", [jwtVerify, createRequest], create);
 
 // List member_categorys
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
-router.get("/stats", [], getMembersCountByCategory);
+router.get("/stats", [jwtVerify], getMembersCountByCategory);
 // List Single member_category
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update member_categorys
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify], update);
 
 // Delete member_category
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;

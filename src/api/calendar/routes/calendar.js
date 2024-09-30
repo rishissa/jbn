@@ -14,17 +14,17 @@ import { jwtVerify } from "../../../../middlewares/jwt_verify.js";
 router.post("/", [jwtVerify, createRequest], create);
 
 // List calendars
-router.get("/", [], find);
+router.get("/", [jwtVerify], find);
 
 // List Single calendar
-router.get("/tags", [], getAllTags);
+router.get("/tags", [jwtVerify], getAllTags);
 
-router.get("/:id", [], findOne);
+router.get("/:id", [jwtVerify], findOne);
 
 // Update calendars
-router.put("/:id", [], update);
+router.put("/:id", [jwtVerify], update);
 
 // Delete calendar
-router.delete("/:id", [], destroy);
+router.delete("/:id", [jwtVerify], destroy);
 
 export default router;
